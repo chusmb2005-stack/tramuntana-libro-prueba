@@ -167,8 +167,11 @@ button{font:inherit;color:inherit}
 .foto-texto .lead{font-size:.86rem;max-width:30ch}
 
 /* ---- pestañas, flechas ---- */
-.pestanas{flex:none;display:flex;justify-content:center;gap:.4rem;padding:.55rem .6rem calc(.75rem + env(safe-area-inset-bottom));position:relative;z-index:8}
-.pest{font:inherit;font-weight:600;font-size:.8rem;padding:.5rem .8rem;border-radius:99px;border:1.5px solid var(--roast);background:rgba(255,255,255,.85);color:var(--foam);cursor:pointer;transition:background .25s,box-shadow .25s,color .25s,border-color .25s}
+.pestanas{flex:none;display:flex;gap:.4rem;padding:.55rem .6rem calc(.75rem + env(safe-area-inset-bottom));position:relative;z-index:8;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.pestanas::-webkit-scrollbar{display:none}
+.pest:first-child{margin-left:auto}.pest:last-child{margin-right:auto}
+.aviso-datos{flex:none;text-align:center;font-size:.74rem;color:var(--foam);background:rgba(255,255,255,.85);padding:.3rem .8rem;margin:0}
+.pest{flex:none;white-space:nowrap;font:inherit;font-weight:600;font-size:.8rem;padding:.5rem .8rem;border-radius:99px;border:1.5px solid var(--roast);background:rgba(255,255,255,.85);color:var(--foam);cursor:pointer;transition:background .25s,box-shadow .25s,color .25s,border-color .25s}
 .pest[aria-current="true"]{background:var(--copper);border-color:#f39a12;color:var(--nogal);box-shadow:0 0 12px rgba(255,176,46,.55)}
 .pest:hover{border-color:var(--copper-soft)}
 .pasar{display:none}
@@ -267,6 +270,8 @@ button{font:inherit;color:inherit}
   </button>
 </main>
 
+<p class="aviso-datos" id="aviso-datos" role="status" hidden></p>
+
 <nav class="pestanas" id="pestanas" aria-label="Categorías de la carta"></nav>
 
 <div class="hint" id="hint" aria-hidden="true">
@@ -364,6 +369,7 @@ function bootCarta(){
       prevB=document.getElementById('ant'),nextB=document.getElementById('sig'),
       reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches,
       N=MENU.length,cur=0,paginas=[],fotos=[],tabs=[],t0=Date.now(),listo=false,ocupado=false,DUR=620;
+  libro.innerHTML='';pest.innerHTML='';   /* se puede volver a pintar cuando llega la hoja */
   var STAR='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z"/></svg>';
   function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
   function tarde(){return Date.now()-t0>1800}
@@ -424,6 +430,14 @@ function bootCarta(){
     var b=el('button','pest',corto(c));b.type='button';b.addEventListener('click',function(){ir(i)});pest.appendChild(b);tabs.push(b);
   });
 
+  /* Si no se ha podido leer la hoja de Google, se avisa en lugar de enseñar precios que pueden estar viejos sin decir nada */
+  function avisoDatos(){
+    var a=document.getElementById('aviso-datos'),f=window.TR_FUENTE;
+    if(f==='cache'){a.textContent='Sin conexión con la carta actualizada: se muestra la última guardada.';a.hidden=false}
+    else if(f==='ejemplo'){a.textContent='No se ha podido actualizar la carta. Los precios pueden no estar al día: pregunta en la barra.';a.hidden=false}
+    else a.hidden=true;
+  }
+
   /* ---- pasar páginas ---- */
   function velo(p){return p.querySelector('.velo')}
   function fin(){ocupado=false}
@@ -455,6 +469,7 @@ function bootCarta(){
     fotos.forEach(function(f,k){f.classList.toggle('activa',k===cur)});
     paginas.forEach(function(p,k){p.setAttribute('aria-hidden',k===cur?'false':'true')});
     tabs.forEach(function(b,k){b.setAttribute('aria-current',k===cur?'true':'false')});
+    var tb=tabs[cur];if(tb&&pest.scrollWidth>pest.clientWidth+2)pest.scrollTo({left:tb.offsetLeft-(pest.clientWidth-tb.offsetWidth)/2,behavior:(listo&&!reduce)?'smooth':'auto'});
     countEl.textContent=(cur+1)+' / '+N;
     prevB.disabled=cur===0;nextB.disabled=cur===N-1;
     try{history.replaceState(null,'','#'+MENU[cur].id)}catch(e){}
@@ -462,28 +477,36 @@ function bootCarta(){
     if(!listo||reduce||ant===cur){paginas.forEach(function(p,k){p.classList.toggle('activa',k===cur);p.style.zIndex=''});return}
     voltear(paginas[ant],paginas[cur],cur>ant);
   }
-  prevB.addEventListener('click',function(){ir(cur-1)});
-  nextB.addEventListener('click',function(){ir(cur+1)});
-  document.addEventListener('keydown',function(e){
-    if(e.key==='ArrowRight'){e.preventDefault();ir(cur+1)}
-    else if(e.key==='ArrowLeft'){e.preventDefault();ir(cur-1)}
-  });
-  /* deslizar a los lados pasa la página; hacia abajo se desplaza la página con normalidad */
-  var sx=0,sy=0,st=false;
-  libro.addEventListener('touchstart',function(e){var t=e.touches[0];sx=t.clientX;sy=t.clientY;st=true},{passive:true});
-  libro.addEventListener('touchend',function(e){
-    if(!st)return;st=false;var t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
-    if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.4)ir(cur+(dx<0?1:-1));
-  },{passive:true});
+  /* Los controles se enganchan una sola vez y siempre llaman al libro que esté pintado en ese momento */
+  window.__libro={ir:ir,cur:function(){return cur}};
+  if(!window.__libroListo){
+    window.__libroListo=true;
+    var L=function(){return window.__libro};
+    prevB.addEventListener('click',function(){L().ir(L().cur()-1)});
+    nextB.addEventListener('click',function(){L().ir(L().cur()+1)});
+    document.addEventListener('keydown',function(e){
+      if(e.key==='ArrowRight'){e.preventDefault();L().ir(L().cur()+1)}
+      else if(e.key==='ArrowLeft'){e.preventDefault();L().ir(L().cur()-1)}
+    });
+    /* deslizar a los lados pasa la página; hacia abajo se desplaza la página con normalidad */
+    var sx=0,sy=0,st=false;
+    libro.addEventListener('touchstart',function(e){var t=e.touches[0];sx=t.clientX;sy=t.clientY;st=true},{passive:true});
+    libro.addEventListener('touchend',function(e){
+      if(!st)return;st=false;var t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
+      if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.4)L().ir(L().cur()+(dx<0?1:-1));
+    },{passive:true});
+    window.addEventListener('tr-fuente',function(){avisoDatos()});
+  }
 
   /* ---- inicio: categoría del enlace (…/#cervezas), sin animar ---- */
   var start=0,hash=location.hash.replace('#','');
   MENU.forEach(function(c,k){if(c.id===hash)start=k});
-  ir(start);listo=true;
+  ir(start);listo=true;avisoDatos();
 
   /* ---- explicación, solo a quien aún no sabe usarla ---- */
   var sabe=false;try{sabe=localStorage.getItem('tr-carta-sabe')==='1'}catch(e){}
-  if(!sabe){
+  if(!sabe&&!window.__hintHecho){
+    window.__hintHecho=true;
     var hint=document.getElementById('hint'),evs=['touchmove','wheel','keydown'];
     var oculta=function(){hint.classList.remove('show');evs.forEach(function(ev){document.removeEventListener(ev,alMover)})};
     function alMover(){setTimeout(oculta,250)}
@@ -507,11 +530,12 @@ function bootCarta(){
     }
     b.style.transform='translate('+dx.toFixed(2)+'px,'+dy.toFixed(2)+'px)';
   }
+  if(!window.__logoHecho){window.__logoHecho=true;
   centrarLogo();
   if(document.fonts){
     if(document.fonts.load)document.fonts.load('2.15rem Sacramento').then(centrarLogo,function(){});
     if(document.fonts.ready)document.fonts.ready.then(centrarLogo);
-  }
+  }}
 }
 </script>
 <script src="carta-datos.js"></script>

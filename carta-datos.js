@@ -79,17 +79,29 @@ var SHEET_CSV_URL='https://docs.google.com/spreadsheets/d/1j95VYi6wmIEYJ1HAUu96M
     });
   }
 
-  function start(){bootCarta()}
+  /* Arranque rápido: se pinta enseguida con la última carta guardada (o la de ejemplo) y, cuando
+     llega la hoja de Google, se vuelve a pintar solo si ha cambiado algo. Así nunca hay pantalla en blanco. */
+  var pintado=null;
+  function pintar(){var k=JSON.stringify(MENU);if(k===pintado)return;pintado=k;bootCarta()}
+  function fuente(f){window.TR_FUENTE=f;try{window.dispatchEvent(new Event('tr-fuente'))}catch(e){}}
 
-  if(!SHEET_CSV_URL||!window.fetch||!window.Promise){start();return}
+  var MUESTRA=MENU;   /* la carta de ejemplo del propio archivo: de ahí salen siempre las fotos y textos de las categorías conocidas */
+  var cache=null;
+  try{cache=JSON.parse(localStorage.getItem(CACHE_KEY)||'null')}catch(e){}
+  if(cache&&cache.length)MENU=cache;
+  fuente(SHEET_CSV_URL?(cache&&cache.length?'cache':'ejemplo'):'hoja');
+  pintar();
 
-  fetchTimeout(SHEET_CSV_URL+('&')+'t='+Date.now(),5000).then(function(txt){
-    var m=build(parseCSV(txt),MENU);
+  if(!SHEET_CSV_URL||!window.fetch||!window.Promise)return;
+
+  fetchTimeout(SHEET_CSV_URL+'&t='+Date.now(),8000).then(function(txt){
+    var m=build(parseCSV(txt),MUESTRA);
     if(!m)throw new Error('hoja vacía o con columnas incorrectas');
     MENU=m;
     try{localStorage.setItem(CACHE_KEY,JSON.stringify(m))}catch(e){}
+    fuente('hoja');pintar();
   }).catch(function(){
-    /* Sin conexión o hoja caída: última carta buena; si no hay, la de ejemplo */
-    try{var c=JSON.parse(localStorage.getItem(CACHE_KEY)||'null');if(c&&c.length)MENU=c}catch(e){}
-  }).then(start);
+    /* Sin conexión o hoja caída: se queda lo que ya se ve (última carta guardada o ejemplo) y se avisa */
+    fuente(cache&&cache.length?'cache':'ejemplo');
+  });
 })();
