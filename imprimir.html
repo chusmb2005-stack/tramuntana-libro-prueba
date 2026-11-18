@@ -222,7 +222,7 @@ function bootCarta(){
 
   function hoja(cats,esDorso){
     var h=el('section','hoja'+(esDorso?' dorso':'')),p=el('div','panel');
-    var cab=el('header','cab');cab.appendChild(el('div','nombre','Café Tramuntana'));cab.appendChild(el('div','dir','Av. de la Pau, 34 · Ibi'));p.appendChild(cab);
+    if(esDorso){var cab=el('header','cab');cab.appendChild(el('div','nombre','Café Tramuntana'));cab.appendChild(el('div','dir','Av. de la Pau, 34 · Ibi'));p.appendChild(cab)}
     var cols=el('div','cols');cols.appendChild(el('div','col'));cols.appendChild(el('div','col'));p.appendChild(cols);h._porCat=cats.map(unidades);
     if(esDorso){
       var il=el('div','info-local'),a=el('div'),b=el('div');
