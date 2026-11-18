@@ -110,37 +110,37 @@ button{font:inherit;color:inherit}
 
 
 
-/* ===================== EL LIBRO ===================== */
-:root{--papel:#fdfbf4;--papel-2:#f6f1e3;--tinta-borde:#e4dccb}
+/* ===================== EL LIBRO =====================
+   Todo es plano: nada de perspectiva ni 3D. Así el texto se ve nítido y la lista se desplaza
+   con normalidad en cualquier móvil. Pasar la página es una animación 2D que dura un instante. */
+:root{--papel:#fdfbf4;--tinta-borde:#e4dccb}
 :root,html,body{overscroll-behavior:none}
-.libro{touch-action:pan-y pinch-zoom}
-.escena{flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center;perspective:2600px;padding:1.1rem .7rem 1.2rem}
-.libro{position:relative;width:calc(var(--pl) + var(--pr));height:100%;max-height:780px;transform-style:preserve-3d}
+.escena{flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center;padding:1.1rem .7rem 1.2rem}
+.libro{position:relative;width:calc(var(--pl) + var(--pr));height:100%;max-height:780px;touch-action:pan-y pinch-zoom}
 /* Tapa del libro: cuero oscuro con filo dorado, asoma por los bordes de las páginas */
-.libro::before{content:"";position:absolute;inset:-9px -9px -12px;border-radius:12px;transform:translateZ(-3px);
+.libro::before{content:"";position:absolute;inset:-9px -9px -12px;border-radius:12px;
   background:linear-gradient(135deg,#43301f,#2B1D14 55%,#1d130c);
   box-shadow:inset 0 0 0 1.5px rgba(245,196,81,.4),0 26px 44px -14px rgba(43,29,20,.6),0 6px 12px rgba(43,29,20,.3)}
-.base{position:absolute;top:0;height:100%;background:var(--papel);overflow:hidden;translate:0 0 -2px}
-.base.izq{display:none;width:var(--pl)}
-.base.der{left:0;width:var(--pr);border-radius:2px 8px 8px 2px;
+.izq{display:none;position:absolute;left:0;top:0;width:var(--pl);height:100%;background:var(--papel);border-radius:8px 2px 2px 8px;overflow:hidden;
+  box-shadow:-1px 0 0 #e6dfce,-2px 0 0 #fff,-3px 0 0 #ddd5c3,-4px 0 0 #fff,-5px 1px 0 #d3cab6}
+.izq::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;background:linear-gradient(270deg,rgba(43,29,20,.2),rgba(43,29,20,0) 8%)}
+.izq .pag{opacity:0;transition:opacity .5s ease .12s}
+.izq .pag.activa{opacity:1}
+.der{position:absolute;left:var(--pl);top:0;width:var(--pr);height:100%;border-radius:2px 8px 8px 2px;
   box-shadow:1px 0 0 #e6dfce,2px 0 0 #fff,3px 0 0 #ddd5c3,4px 0 0 #fff,5px 1px 0 #d3cab6}
-.hoja{position:absolute;top:0;left:0;width:var(--pr);height:100%;transform-origin:left center;transform-style:preserve-3d;
-  transition:transform .95s cubic-bezier(.45,.05,.25,1)}
-.hoja.girada{transform:rotateY(-180deg)}
-.sin-anim .hoja{transition:none!important}
-.cara{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  background:linear-gradient(180deg,#fffdf8,var(--papel) 40%,#faf5e8)}
-.cara.frente{border-radius:2px 8px 8px 2px}
-.cara.atras{transform:rotateY(180deg);border-radius:8px 2px 2px 8px;right:auto;width:var(--pb)}
-/* sombra del lomo y desvanecido al pie para indicar que se puede bajar */
-.cara.frente::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;background:linear-gradient(90deg,rgba(43,29,20,.2),rgba(43,29,20,0) 8%)}
-.cara.atras::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;background:linear-gradient(270deg,rgba(43,29,20,.2),rgba(43,29,20,0) 8%)}
-.cara::before{content:"";position:absolute;left:0;right:0;bottom:2.4rem;height:2.2rem;pointer-events:none;z-index:5;background:linear-gradient(0deg,#faf5e8,rgba(250,245,232,0))}
+.pagina{position:absolute;inset:0;background:linear-gradient(180deg,#fffdf8,var(--papel) 40%,#faf5e8);border-radius:2px 8px 8px 2px;
+  visibility:hidden;transform-origin:left center}
+.pagina.activa{visibility:visible;z-index:2}
+/* sombra del lomo y desvanecido al pie, para indicar que se puede bajar */
+.pagina::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;border-radius:inherit;background:linear-gradient(90deg,rgba(43,29,20,.2),rgba(43,29,20,0) 8%)}
+.pagina::before{content:"";position:absolute;left:0;right:0;bottom:2.4rem;height:2.2rem;pointer-events:none;z-index:5;background:linear-gradient(0deg,#faf5e8,rgba(250,245,232,0))}
+/* sombra que se proyecta sobre la página que se descubre al pasar la hoja */
+.velo{position:absolute;inset:0;pointer-events:none;z-index:9;opacity:0;border-radius:inherit;background:linear-gradient(90deg,rgba(43,29,20,.4),rgba(43,29,20,0) 70%)}
 .pag{position:absolute;inset:0}
 .folio{position:absolute;z-index:7;bottom:0;left:0;right:0;height:2.4rem;line-height:2.4rem;text-align:center;font-family:var(--serif);font-size:.95rem;color:var(--copper-soft);pointer-events:none;background:#faf5e8;border-top:1px solid var(--tinta-borde)}
 
-/* ---- página de productos ---- */
-.desplaza{position:absolute;inset:0 0 2.4rem 0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:none;padding:0 1.35rem 1.6rem 1.7rem;-webkit-overflow-scrolling:touch}
+/* ---- página de productos: scroll normal, sin transformaciones ---- */
+.desplaza{position:absolute;inset:0 0 2.4rem 0;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;scrollbar-width:none;padding:0 1.35rem 1.6rem 1.7rem;-webkit-overflow-scrolling:touch}
 .desplaza::-webkit-scrollbar{display:none}
 .desplaza:focus-visible{outline:2px solid var(--copper-soft);outline-offset:-3px}
 .cabecera-pag{display:none}
@@ -158,17 +158,13 @@ button{font:inherit;color:inherit}
 .is-star{border:2px solid #f39a12;border-radius:16px;padding:.75rem .85rem;margin:0 -.2rem;background:radial-gradient(circle at 100% 0%,rgba(233,169,44,.2),transparent 60%);
   box-shadow:inset 0 0 0 1px #ffe39a,0 0 0 1px rgba(255,214,120,.45),0 0 10px rgba(255,176,46,.35)}
 
-/* ---- página de foto (la de la izquierda del libro) ---- */
-.cara.atras .foto,.base.izq .foto{border-radius:8px 2px 0 0}
-.foto{position:absolute;left:0;right:0;top:0;height:62%;background:linear-gradient(135deg,var(--roast),var(--ink))}
-.foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+/* ---- página de foto (la de la izquierda del libro, solo en pantallas grandes) ---- */
+.foto{position:absolute;left:0;right:0;top:0;height:62%;border-radius:8px 2px 0 0;background:linear-gradient(135deg,var(--roast),var(--ink))}
+.foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit}
 .foto::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(253,251,244,0) 55%,#fdfbf4 100%)}
 .foto-texto{position:absolute;left:1.4rem;right:1.2rem;bottom:3.4rem;z-index:2}
 .foto-texto h2{font-family:var(--serif);font-weight:700;font-size:clamp(1.7rem,2.5vw,2.3rem);line-height:1.08;margin-bottom:.5rem;text-wrap:balance}
 .foto-texto .lead{font-size:.86rem;max-width:30ch}
-.fin{display:grid;place-content:center;gap:.9rem;text-align:center;padding:2rem;height:100%}
-.fin .neon{font-size:3rem;line-height:1}
-.fin p{color:var(--foam);font-size:.9rem}
 
 /* ---- pestañas, flechas ---- */
 .pestanas{flex:none;display:flex;justify-content:center;gap:.4rem;padding:.55rem .6rem calc(.75rem + env(safe-area-inset-bottom));position:relative;z-index:8}
@@ -179,11 +175,8 @@ button{font:inherit;color:inherit}
 
 /* ---- móvil: una sola página a la vez ---- */
 @media (max-width:819px){
-  :root{--pl:0px;--pr:min(calc(100vw - 1.4rem),540px);--pb:var(--pr)}
-  .escena{padding:.8rem .7rem .3rem;overflow:hidden}
-  .hoja{transition:transform .95s cubic-bezier(.45,.05,.25,1),visibility 0s}
-  .hoja.girada{visibility:hidden;transition:transform .95s cubic-bezier(.45,.05,.25,1),visibility 0s .95s}
-  .sin-anim .hoja.girada{visibility:hidden}
+  :root{--pl:0px;--pr:min(calc(100vw - 1.4rem),540px)}
+  .escena{padding:.8rem .7rem .3rem}
   .libro::before{inset:-7px -7px -9px}
   .desplaza{padding:0 1.05rem 1.2rem 1.2rem}
   .hero-movil{margin:0 -1.05rem 0 -1.2rem;height:112px}
@@ -193,19 +186,14 @@ button{font:inherit;color:inherit}
   .lead.solo-movil{font-size:.8rem;margin:.35rem 0 0}
   .grupo{margin-top:.9rem}
   .grupo h3{font-size:1.4rem;margin-bottom:.6rem}
-  .foto-texto .lead{max-width:none}
   .pestanas{gap:.3rem;padding:.4rem .4rem calc(.6rem + env(safe-area-inset-bottom))}
   .pest{padding:.42rem .62rem;font-size:.78rem}
 }
-/* ---- escritorio: libro abierto a dos páginas ---- */
+/* ---- escritorio: libro abierto a dos páginas (la de productos, más ancha) ---- */
 @media (min-width:820px){
-  :root{--pl:min(27vw,340px);--pr:min(46vw,640px);--pb:var(--pl)}
+  :root{--pl:min(27vw,340px);--pr:min(46vw,640px)}
   .libro::before{inset:-14px -14px -18px}
-  .base.izq{display:block;left:0;border-radius:8px 2px 2px 8px;
-    box-shadow:-1px 0 0 #e6dfce,-2px 0 0 #fff,-3px 0 0 #ddd5c3,-4px 0 0 #fff,-5px 1px 0 #d3cab6}
-  .base.izq::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;background:linear-gradient(270deg,rgba(43,29,20,.2),rgba(43,29,20,0) 8%)}
-  .base.der{left:var(--pl)}
-  .hoja{left:var(--pl)}
+  .izq{display:block}
   .hero-movil,.lead.solo-movil{display:none}
   .cabecera-pag{display:block;font-family:var(--serif);font-style:italic;font-size:1rem;color:var(--foam);padding:1.4rem 0 .2rem}
   .desplaza{padding-top:0}
@@ -217,7 +205,6 @@ button{font:inherit;color:inherit}
   .pasar.sig{right:calc(50% - (var(--pl) + var(--pr))/2 - 4.8rem)}
 }
 @media (prefers-reduced-motion:reduce){
-  .hoja{transition:none}
   *,*::before,*::after{transition:none!important;animation:none!important}
 }
 </style>
@@ -274,7 +261,7 @@ button{font:inherit;color:inherit}
   <button class="pasar ant" id="ant" type="button" aria-label="Página anterior">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
   </button>
-  <div class="libro sin-anim" id="libro" role="group" aria-roledescription="libro" aria-label="Carta"></div>
+  <div class="libro" id="libro" role="group" aria-roledescription="libro" aria-label="Carta"></div>
   <button class="pasar sig" id="sig" type="button" aria-label="Página siguiente">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
   </button>
@@ -376,7 +363,7 @@ function bootCarta(){
   var libro=document.getElementById('libro'),pest=document.getElementById('pestanas'),countEl=document.getElementById('count'),
       prevB=document.getElementById('ant'),nextB=document.getElementById('sig'),
       reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-      N=MENU.length,cur=0,hojas=[],tabs=[],t0=Date.now(),listo=false;
+      N=MENU.length,cur=0,paginas=[],fotos=[],tabs=[],t0=Date.now(),listo=false,ocupado=false,DUR=620;
   var STAR='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z"/></svg>';
   function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
   function tarde(){return Date.now()-t0>1800}
@@ -390,21 +377,29 @@ function bootCarta(){
     if(it[2])li.appendChild(el('p','desc',it[2]));
     return li;
   }
-  function imagen(c,i){if(!c.photo)return null;var im=el('img');im.alt='';im.src=c.photo;im.onerror=function(){im.remove()};return im}
+  /* Fotos: se piden cuando se van a necesitar (la actual y sus vecinas) y en buena calidad para pantallas de alta densidad */
+  function nitida(u){return u.replace(/([?&])w=\d+/,'$1w=1400').replace(/([?&])q=\d+/,'$1q=80')}
+  function imagen(c){if(!c.photo)return null;var im=el('img');im.alt='';im.decoding='async';im.dataset.src=nitida(c.photo);im.onerror=function(){im.remove()};return im}
+  function cargarFotos(i){
+    [i,i+1,i-1].forEach(function(k){
+      if(k<0||k>=N)return;
+      document.querySelectorAll('[data-cat="'+k+'"] img').forEach(function(im){if(!im.src&&im.dataset.src)im.src=im.dataset.src});
+    });
+  }
 
-  /* página de la izquierda: foto y título de la categoría */
+  /* página de la izquierda (solo escritorio): foto y título de la categoría */
   function fotoPagina(i){
-    var c=MENU[i],d=el('div','pag'),f=el('div','foto'),im=imagen(c,i);
-    if(im)f.appendChild(im);d.appendChild(f);
+    var c=MENU[i],d=el('div','pag');d.dataset.cat=i;
+    var f=el('div','foto'),im=imagen(c);if(im)f.appendChild(im);d.appendChild(f);
     var t=el('div','foto-texto');if(c.when)t.appendChild(el('span','cuando',c.when));
     t.appendChild(el('h2',null,c.title));if(c.lead)t.appendChild(el('p','lead',c.lead));d.appendChild(t);
     d.appendChild(el('span','folio',String(2*i+1)));
     return d;
   }
-  /* página de la derecha: todos los productos de la categoría, se baja con scroll normal */
+  /* página de la derecha: todos los productos de la categoría; se baja con scroll normal */
   function itemsPagina(i){
-    var c=MENU[i],d=el('div','pag'),sc=el('div','desplaza');sc.tabIndex=0;sc.setAttribute('aria-label',c.title);
-    var hero=el('div','hero-movil'),im=imagen(c,i);if(im)hero.appendChild(im);
+    var c=MENU[i],d=el('div','pag'),sc=el('div','desplaza');d.dataset.cat=i;sc.tabIndex=0;sc.setAttribute('aria-label',c.title);
+    var hero=el('div','hero-movil'),im=imagen(c);if(im)hero.appendChild(im);
     var t=el('div','t');if(c.when)t.appendChild(el('span','cuando',c.when));t.appendChild(el('h2',null,c.title));hero.appendChild(t);sc.appendChild(hero);
     if(c.lead)sc.appendChild(el('p','lead solo-movil',c.lead));
     sc.appendChild(el('div','cabecera-pag',c.title));
@@ -420,48 +415,52 @@ function bootCarta(){
     d.appendChild(sc);d.appendChild(el('span','folio',String(2*i+2)));
     return d;
   }
-  function finPagina(){
-    var d=el('div','fin'),n=el('p','neon','Café Tramuntana');n.setAttribute('aria-hidden','true');
-    d.appendChild(n);d.appendChild(el('p',null,'Gracias por venir. Av. de la Pau, 34, Ibi.'));return d;
-  }
 
   /* ---- montar el libro ---- */
-  var izq=el('div','base izq');izq.appendChild(fotoPagina(0));
-  var der=el('div','base der');
-  libro.appendChild(izq);libro.appendChild(der);
+  var izq=el('div','izq'),der=el('div','der');libro.appendChild(izq);libro.appendChild(der);
   MENU.forEach(function(c,i){
-    var h=el('div','hoja'),fr=el('div','cara frente'),bk=el('div','cara atras');
-    fr.appendChild(itemsPagina(i));bk.appendChild(i<N-1?fotoPagina(i+1):finPagina());
-    h.appendChild(fr);h.appendChild(bk);libro.appendChild(h);hojas.push(h);
+    var p=el('div','pagina');p.appendChild(itemsPagina(i));p.appendChild(el('div','velo'));der.appendChild(p);paginas.push(p);
+    var f=fotoPagina(i);izq.appendChild(f);fotos.push(f);
     var b=el('button','pest',corto(c));b.type='button';b.addEventListener('click',function(){ir(i)});pest.appendChild(b);tabs.push(b);
   });
 
   /* ---- pasar páginas ---- */
-  /* Cada hoja queda a una profundidad distinta (décimas de píxel): arriba del montón, la última que se pasó o la primera que queda */
-  function asentar(h,i,gira){h.style.zIndex=gira?i:100-i;h.style.translate='0 0 '+((gira?i:N-i)*0.5+0.5)+'px'}
+  function velo(p){return p.querySelector('.velo')}
+  function fin(){ocupado=false}
+  function animar(el_,frames,op){return el_.animate?el_.animate(frames,op):null}
+  function voltear(sale,entra,adelante){
+    ocupado=true;
+    var op={duration:DUR,easing:'cubic-bezier(.55,.05,.3,1)',fill:'both'},a;
+    if(adelante){
+      /* la página actual se pliega hacia el lomo y descubre la siguiente */
+      entra.classList.add('activa');entra.style.zIndex=1;sale.style.zIndex=3;
+      animar(velo(entra),[{opacity:.9},{opacity:0}],op);
+      a=animar(sale,[{transform:'scaleX(1) skewY(0deg)',boxShadow:'0 0 0 rgba(43,29,20,0)'},{transform:'scaleX(.015) skewY(-2.5deg)',boxShadow:'18px 0 28px rgba(43,29,20,.35)'}],op);
+      if(!a){sale.classList.remove('activa');sale.style.zIndex='';entra.style.zIndex='';return fin()}
+      a.onfinish=function(){sale.classList.remove('activa');a.cancel();sale.style.zIndex='';entra.style.zIndex='';velo(entra).getAnimations&&velo(entra).getAnimations().forEach(function(x){x.cancel()});fin()};
+    }else{
+      /* la página anterior se despliega desde el lomo y tapa la actual */
+      entra.classList.add('activa');entra.style.zIndex=3;sale.style.zIndex=1;
+      animar(velo(sale),[{opacity:0},{opacity:.9}],op);
+      a=animar(entra,[{transform:'scaleX(.015) skewY(-2.5deg)',boxShadow:'18px 0 28px rgba(43,29,20,.35)'},{transform:'scaleX(1) skewY(0deg)',boxShadow:'0 0 0 rgba(43,29,20,0)'}],op);
+      if(!a){sale.classList.remove('activa');sale.style.zIndex='';entra.style.zIndex='';return fin()}
+      a.onfinish=function(){sale.classList.remove('activa');a.cancel();sale.style.zIndex='';entra.style.zIndex='';velo(sale).getAnimations&&velo(sale).getAnimations().forEach(function(x){x.cancel()});fin()};
+    }
+  }
   function ir(n){
     n=Math.max(0,Math.min(N-1,n));
-    if(listo&&n===cur)return;
+    if(ocupado||(listo&&n===cur))return;
     if(listo&&tarde())sabeUsarla();
-    var cambian=[];
-    hojas.forEach(function(h,i){if((i<n)!==h.classList.contains('girada'))cambian.push(i)});
-    if(n<cur)cambian.reverse();       /* al volver atrás, primero la más cercana */
-    cur=n;
-    hojas.forEach(function(h,i){
-      var gira=i<cur,k=cambian.indexOf(i);
-      h.querySelector('.frente').setAttribute('aria-hidden',gira?'true':'false');
-      h.querySelector('.atras').setAttribute('aria-hidden',gira?'false':'true');
-      if(k<0){if(!listo)asentar(h,i,gira);return}
-      var retardo=(reduce||!listo)?0:k*130;
-      h.style.transitionDelay=retardo+'ms';
-      h.style.zIndex=300;h.style.translate='0 0 20px';   /* la que gira va por delante mientras se mueve */
-      h.classList.toggle('girada',gira);
-      setTimeout(function(){asentar(h,i,gira);h.style.transitionDelay='0ms'},(reduce||!listo)?0:retardo+980);
-    });
+    var ant=cur;cur=n;
+    fotos.forEach(function(f,k){f.classList.toggle('activa',k===cur)});
+    paginas.forEach(function(p,k){p.setAttribute('aria-hidden',k===cur?'false':'true')});
     tabs.forEach(function(b,k){b.setAttribute('aria-current',k===cur?'true':'false')});
     countEl.textContent=(cur+1)+' / '+N;
     prevB.disabled=cur===0;nextB.disabled=cur===N-1;
     try{history.replaceState(null,'','#'+MENU[cur].id)}catch(e){}
+    cargarFotos(cur);
+    if(!listo||reduce||ant===cur){paginas.forEach(function(p,k){p.classList.toggle('activa',k===cur);p.style.zIndex=''});return}
+    voltear(paginas[ant],paginas[cur],cur>ant);
   }
   prevB.addEventListener('click',function(){ir(cur-1)});
   nextB.addEventListener('click',function(){ir(cur+1)});
@@ -477,20 +476,18 @@ function bootCarta(){
     if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.4)ir(cur+(dx<0?1:-1));
   },{passive:true});
 
-  /* ---- inicio: categoría del enlace (carta-libro.html#cervezas), sin animar ---- */
+  /* ---- inicio: categoría del enlace (…/#cervezas), sin animar ---- */
   var start=0,hash=location.hash.replace('#','');
   MENU.forEach(function(c,k){if(c.id===hash)start=k});
   ir(start);listo=true;
-  requestAnimationFrame(function(){requestAnimationFrame(function(){libro.classList.remove('sin-anim')})});
 
   /* ---- explicación, solo a quien aún no sabe usarla ---- */
   var sabe=false;try{sabe=localStorage.getItem('tr-carta-sabe')==='1'}catch(e){}
   if(!sabe){
-    var hint=document.getElementById('hint');
-    setTimeout(function(){hint.classList.add('show')},800);
+    var hint=document.getElementById('hint'),evs=['touchmove','wheel','keydown'];
     var oculta=function(){hint.classList.remove('show');evs.forEach(function(ev){document.removeEventListener(ev,alMover)})};
-    var evs=['touchmove','wheel','keydown'];
     function alMover(){setTimeout(oculta,250)}
+    setTimeout(function(){hint.classList.add('show')},800);
     evs.forEach(function(ev){document.addEventListener(ev,alMover,{passive:true})});
     setTimeout(oculta,12000);
   }
