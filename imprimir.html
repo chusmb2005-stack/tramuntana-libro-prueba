@@ -212,13 +212,18 @@ function bootCarta(){
   }
   function contar(c){return c.groups.reduce(function(n,g){return n+g.items.length+1},0)}
 
-  /* reparto: lo de día por delante; cervezas y copas por detrás; lo que no se conozca va a la cara con menos contenido */
-  var frente=[],dorso=[],nf=0,nd=0;
-  MENU.forEach(function(c){
-    var k=contar(c);
-    if(DIA.indexOf(c.id)>=0||(NOCHE.indexOf(c.id)<0&&nf<=nd)){frente.push(c);nf+=k}else{dorso.push(c);nd+=k}
-  });
-  if(!dorso.length&&frente.length>1){var m=frente.pop();dorso.push(m)}
+  /* Reparto: se respeta SIEMPRE el orden de la hoja de cálculo. La cara de delante lleva las primeras categorías y la de
+     detrás empieza en la primera que sea de noche (cervezas, cócteles, copas, vinos…), aunque el dueño las haya renombrado.
+     Si no hay ninguna de noche, se parte por donde más equilibre el contenido de las dos caras. */
+  function esNoche(c){return NOCHE.indexOf(c.id)>=0||/cerve|cocte|copa|vino|licor|bebida|noche/.test(norm(c.title))}
+  var corte=-1;
+  MENU.forEach(function(c,i){if(corte<0&&i>0&&esNoche(c))corte=i});
+  if(corte<0){
+    var pesos=MENU.map(contar),tot=pesos.reduce(function(a,b){return a+b},0),acum=0,mejorD=1e9;
+    corte=MENU.length;
+    for(var i=1;i<MENU.length;i++){acum+=pesos[i-1];var d=Math.abs(tot-2*acum);if(d<mejorD){mejorD=d;corte=i}}
+  }
+  var frente=MENU.slice(0,corte),dorso=MENU.slice(corte);
 
   function hoja(cats,esDorso){
     var h=el('section','hoja'+(esDorso?' dorso':'')),p=el('div','panel');
@@ -261,8 +266,8 @@ function bootCarta(){
     var ff=mejor(hf),fd=Math.min(mejor(hd),ff*1.2),fs=Math.min(ff,fd);
     hf.style.setProperty('--fs',ff+'pt');hd.style.setProperty('--fs',fd+'pt');empaquetar(hf);empaquetar(hd);
     var ok=cabe(hf)&&cabe(hd),f1=function(x){return x.toFixed(1).replace('.',',')};
-    est.className='estado'+(ok&&fs>=7?'':' mal');
-    est.textContent=(ok?'Cada cara cabe en una hoja A4. ':'¡Hay demasiado texto para una hoja! ')+'Tamaño de letra: '+f1(ff)+' pt (frente) y '+f1(fd)+' pt (dorso)'+(fs<7.5?'. Es pequeño: prueba a quitar las descripciones':'')+'. Datos: '+(window.TR_FUENTE==='hoja'?'hoja de Google actualizada.':window.TR_FUENTE==='cache'?'última carta guardada (sin conexión).':'carta de ejemplo (sin conexión con la hoja): comprueba los precios.');
+    est.className='estado'+(ok&&fs>=7&&window.TR_FUENTE==='hoja'?'':' mal');
+    est.textContent=(ok?'Cada cara cabe en una hoja A4. ':'¡Hay demasiado texto para una hoja! ')+'Tamaño de letra: '+f1(ff)+' pt (frente) y '+f1(fd)+' pt (dorso)'+(fs<7.5?'. Es pequeño: prueba a quitar las descripciones':'')+'. Datos: '+(window.TR_FUENTE==='hoja'?'hoja de Google actualizada.':window.TR_FUENTE==='cache'?'última carta guardada (sin conexión): comprueba los precios.':window.TR_FUENTE==='vacia'?'la hoja de Google está vacía o sin productos disponibles: se usa la última carta guardada o la de ejemplo; comprueba los precios.':'carta de ejemplo (sin conexión con la hoja): comprueba los precios.');
     previsualizar();
   }
   /* vista previa en pantalla: se reduce para que quepan las dos hojas; al imprimir no se aplica */

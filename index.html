@@ -431,6 +431,7 @@ function bootCarta(){
   function avisoDatos(){
     var a=document.getElementById('aviso-datos'),f=window.TR_FUENTE;
     if(f==='cache'){a.textContent='Sin conexión con la carta actualizada: se muestra la última guardada.';a.hidden=false}
+    else if(f==='vacia'){a.textContent='La carta actualizada está vacía: se muestra la última guardada. Los precios pueden no estar al día.';a.hidden=false}
     else if(f==='ejemplo'){a.textContent='No se ha podido actualizar la carta. Los precios pueden no estar al día: pregunta en la barra.';a.hidden=false}
     else a.hidden=true;
   }
