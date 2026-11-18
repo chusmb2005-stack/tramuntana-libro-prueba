@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232B1D14'/%3E%3Ctext x='32' y='46' font-size='40' text-anchor='middle' fill='%23F5C451' font-family='Georgia,serif' font-weight='700'%3ET%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Carta para imprimir · Café Tramuntana</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Instrument+Sans:wght@400;500;600&family=Sacramento&display=swap" rel="stylesheet">
+<style>
+:root{
+  --nogal:#2B1D14; --foam:#5E4E42; --madera:#8B5A2B; --neon:#E39B14; --linea:#D9CFBC;
+  --serif:'Cormorant Garamond',Georgia,serif; --sans:'Instrument Sans',system-ui,sans-serif; --script:'Sacramento','Brush Script MT',cursive;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{font-family:var(--sans);color:var(--nogal);background:#d9d4c8;-webkit-font-smoothing:antialiased}
+
+/* ---------- Barra de herramientas (solo en pantalla) ---------- */
+.barra{position:sticky;top:0;z-index:10;display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;align-items:center;justify-content:center;padding:.8rem 1rem;background:#2B1D14;color:#F3EBDD;font-size:.9rem;box-shadow:0 4px 18px rgba(0,0,0,.25)}
+.barra h1{font-family:var(--serif);font-size:1.35rem;font-weight:700;margin-right:.4rem}
+.barra button{font:inherit;font-weight:600;cursor:pointer;border-radius:8px;border:1.5px solid #F5C451;padding:.55rem 1.1rem;background:#F5C451;color:#2B1D14}
+.barra button:hover{box-shadow:0 0 14px rgba(255,176,46,.6)}
+.barra label{display:inline-flex;align-items:center;gap:.4rem;cursor:pointer;user-select:none}
+.barra input{width:1.1rem;height:1.1rem;accent-color:#F5C451}
+.barra .info{flex-basis:100%;text-align:center;font-size:.8rem;color:#C9B9A4}
+.barra .info b{color:#F5C451;font-weight:600}
+.estado{flex-basis:100%;text-align:center;font-size:.78rem;color:#C9B9A4}
+.estado.mal{color:#FFB4A2}
+
+/* ---------- Hojas A4 ---------- */
+.hojas{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:24px;padding:22px 12px 40px}
+.escala{transform-origin:top left}
+.hoja{position:relative;width:210mm;height:296mm;overflow:hidden;background:#fff url(fondo-carta.jpg) 0 0/56mm 56mm repeat;box-shadow:0 10px 40px rgba(0,0,0,.35);font-size:var(--fs,9.5pt);line-height:1.28}
+.sin-fondo .hoja{background:#fff}
+/* panel blanco donde va el texto; el dibujo de hojas queda como marco y, muy suave, por detrás */
+.panel{position:absolute;inset:11mm;display:flex;flex-direction:column;padding:8mm 9mm 7mm;border-radius:5mm;background:rgba(255,255,255,.94);border:.35mm solid var(--neon);box-shadow:0 0 0 1.2mm rgba(255,255,255,.9)}
+.sin-fondo .panel{background:#fff;box-shadow:none}
+
+.cab{text-align:center;padding-bottom:3.4mm;margin-bottom:4.2mm;border-bottom:.3mm solid var(--linea)}
+.nombre{font-family:var(--script);font-size:5.6em;line-height:.9;color:#E39B14;-webkit-text-stroke:.012em #B5700A;text-shadow:0 .25mm .6mm rgba(43,29,20,.18)}
+.dorso .nombre{font-size:3.9em}
+.dir{font-size:.82em;color:var(--foam);margin-top:1.2mm;letter-spacing:.02em}
+.cols{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:minmax(0,1fr)}
+.col{min-height:0}
+.col:first-child{padding-right:4.5mm}
+.col+.col{padding-left:4.5mm;border-left:.25mm solid var(--linea)}
+.cat{margin-bottom:4.4mm}
+.cat.cont{margin-top:-1.2mm}
+.cat h2{font-family:var(--serif);font-weight:700;font-size:1.75em;line-height:1.05;color:var(--nogal);break-after:avoid;padding-bottom:.8mm;border-bottom:.45mm solid var(--neon)}
+.cat .lead{font-size:.8em;font-style:italic;color:var(--foam);margin:.8mm 0 0;break-after:avoid}
+.grupo{break-inside:avoid;margin-top:2.2mm}
+.grupo h3{font-family:var(--serif);font-style:italic;font-weight:600;font-size:1.25em;color:var(--madera);margin-bottom:.6mm;break-after:avoid}
+.grupo ul{list-style:none}
+.grupo li{padding:.55mm 0;break-inside:avoid}
+.l{display:flex;align-items:baseline;gap:1.2mm}
+.n{font-weight:600;font-size:1em;line-height:1.2}
+.pts{flex:1;min-width:3mm;border-bottom:.3mm dotted #8B5A2B;transform:translateY(-.6mm)}
+.p{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--madera)}
+.d{font-size:.8em;line-height:1.25;color:var(--foam);margin-top:.15mm}
+.sin-desc .d{display:none}
+.estrella{color:#C77E00;margin-right:.6mm}
+
+.pie{margin-top:auto;padding-top:3.4mm;border-top:.3mm solid var(--linea);font-size:.8em;color:var(--foam);text-align:center;line-height:1.35}
+.pie .leyenda{margin-top:1.2mm}
+.info-local{margin-top:auto;display:grid;grid-template-columns:1.75fr 1fr;gap:5mm;padding:4mm 4.5mm;border:.3mm solid var(--linea);border-radius:3mm;background:rgba(255,250,236,.9);font-size:.95em}
+.info-local h4{font-family:var(--serif);font-weight:700;font-size:1.35em;margin-bottom:1mm;color:var(--nogal)}
+.info-local .h{display:grid;grid-template-columns:auto auto;justify-content:start;gap:.3mm 4mm;font-size:.86em}
+.info-local .h b{font-weight:600}
+.info-local .h span{font-variant-numeric:tabular-nums;color:var(--foam);white-space:nowrap}
+.info-local .h b{white-space:nowrap}
+.info-local p{color:var(--foam);line-height:1.35}
+.info-local strong{color:var(--nogal);font-weight:600}
+.dorso .pie{margin-top:3mm}
+
+/* ---------- Impresión: una hoja A4 por cada cara, sin márgenes ---------- */
+@page{size:A4 portrait;margin:0}
+@media print{
+  body{background:#fff}
+  .barra{display:none!important}
+  .hojas{display:block;padding:0;gap:0}
+  .escala{transform:none!important;height:auto!important;width:auto!important}
+  .hoja{box-shadow:none;margin:0;break-after:page;page-break-after:always}
+  .hoja:last-child{break-after:auto;page-break-after:auto}
+}
+</style>
+</head>
+<body>
+<header class="barra">
+  <h1>Carta para imprimir</h1>
+  <button type="button" id="imprimir">Imprimir o guardar en PDF</button>
+  <label><input type="checkbox" id="desc" checked> Con descripciones</label>
+  <label><input type="checkbox" id="fondo" checked> Con el dibujo de hojas de fondo</label>
+  <p class="info">Una hoja A4: <b>cara 1 = frente</b>, <b>cara 2 = dorso</b>. Al imprimir elige <b>A4</b>, <b>márgenes ninguno</b>, activa <b>gráficos de fondo</b> y <b>doble cara, girando por el lado largo</b>.</p>
+  <p class="estado" id="estado" role="status"></p>
+</header>
+<main class="hojas" id="hojas"></main>
+
+<script>
+/* Carta de ejemplo (copia de seguridad). Si hay hoja de Google configurada en carta-datos.js, la carta sale de ella. */
+var MENU=[
+  {id:'cafes',title:'Cafés & Desayunos',when:'Desde las 8:30',
+   photo:'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=900&q=70',
+   lead:'Café de tueste artesano. Leche sin lactosa o bebida vegetal, consúltanos.',
+   groups:[
+    {name:'Cafés',items:[
+      ['Café Bombón','2,00 €','Espresso con leche condensada, dulce y con mucho cuerpo.',true],
+      ['Café solo / cortado','1,50 €','Espresso intenso, con un toque de leche si lo prefieres.'],
+      ['Café con leche','1,70 €','El clásico de cada mañana, cremoso y bien caliente.'],
+      ['Capuchino','2,30 €','Espresso, leche vaporizada y espuma sedosa con cacao.'],
+      ['Carajillo','2,60 €','Café con un chorrito de licor: brandy, whisky o ron.'],
+      ['Chocolate a la taza','2,80 €','Espeso y casero, perfecto para mojar.']]},
+    {name:'Desayunos',items:[
+      ['Desayuno Tramuntana','5,50 €','Café, zumo de naranja natural y tostada a elegir.',true],
+      ['Tostada con tomate y aceite','2,00 €','Pan crujiente, tomate rallado y aceite de oliva virgen extra.'],
+      ['Tostada de Jamón Ibérico y Tomate','4,50 €','Jamón ibérico cortado a cuchillo sobre pan de masa madre.'],
+      ['Tostada de Aguacate y Huevo','4,80 €','Aguacate, huevo poché y un toque de pimienta y limón.'],
+      ['Croissant a la plancha','2,20 €','Con mantequilla y mermelada, o relleno de jamón y queso (+0,80 €).']]}
+   ]},
+  {id:'tapas',title:'Tapas & Picoteo',when:'Para compartir',
+   photo:'https://images.unsplash.com/photo-1515443961218-a51367888e4b?auto=format&fit=crop&w=900&q=70',
+   lead:'Pregunta por las tapas del día.',
+   groups:[
+    {name:'Tapas clásicas',items:[
+      ['Croquetas caseras (6 uds.)','7,00 €','De jamón ibérico, cremosas por dentro y crujientes por fuera.',true],
+      ['Patatas bravas','5,50 €','Fritas al momento con salsa brava casera y alioli suave.'],
+      ['Calamares a la andaluza','9,00 €','Rebozado fino, con limón y alioli.'],
+      ['Ensaladilla rusa','5,50 €','Receta de siempre con atún, huevo y aceitunas.'],
+      ['Pimientos de padrón','6,00 €','Salteados con sal en escamas. Unos pican y otros no.']]},
+    {name:'Para compartir',items:[
+      ['Tabla de ibéricos','13,50 €','Jamón, lomo y chorizo ibéricos con picos y tomate.',true],
+      ['Tabla de quesos','12,50 €','Selección de quesos curados con frutos secos y mermelada.'],
+      ['Nachos Tramuntana','8,50 €','Con queso fundido, guacamole, pico de gallo y jalapeños.']]}
+   ]},
+  {id:'bocadillos',title:'Bocadillos & Sándwiches',when:'Mediodía y noche',
+   photo:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=70',
+   lead:'Con patatas fritas caseras (salvo los sándwiches fríos).',
+   groups:[
+    {name:'Bocadillos',items:[
+      ['Bocadillo de lomo con queso','5,50 €','Lomo a la plancha, queso fundido y pimiento verde.',true],
+      ['Bocadillo de jamón ibérico','6,50 €','Pan de cristal con tomate y aceite de oliva.'],
+      ['Bocadillo de tortilla de patata','4,50 €','Tortilla jugosa y casera, con o sin cebolla.'],
+      ['Pollo crujiente','7,50 €','Pechuga rebozada, lechuga, tomate y mayonesa de mostaza.']]},
+    {name:'Hamburguesas & Sándwiches',items:[
+      ['Hamburguesa Tramuntana','9,50 €','Ternera, queso curado, bacon crujiente, cebolla caramelizada y salsa de la casa.',true],
+      ['Sándwich mixto a la plancha','3,50 €','Jamón cocido y queso, tostado hasta que queda dorado.'],
+      ['Sándwich vegetal','4,50 €','Lechuga, tomate, huevo, atún, espárragos y mayonesa.']]}
+   ]},
+  {id:'cervezas',title:'Cervezas',when:'Al caer la tarde',
+   photo:'https://images.unsplash.com/photo-1608270586620-248524c67de9?auto=format&fit=crop&w=900&q=70',
+   lead:'Grifo, botella y artesanas de todo el mundo. Déjate aconsejar.',
+   groups:[
+    {name:'De grifo',items:[
+      ['Caña','1,80 €','Rubia lager, fresca y ligera.'],
+      ['Doble','2,60 €','La caña de siempre, en copa más grande.'],
+      ['Clara / Shandy','2,00 €','Cerveza con limón o gaseosa.']]},
+    {name:'Artesanas',items:[
+      ['IPA Artesanal','4,50 €','Aromática y con carácter, notas cítricas y amargor marcado.',true],
+      ['Pale Ale','4,20 €','Equilibrada, con toques de fruta tropical.'],
+      ['Tostada / Stout','4,50 €','Notas de café y chocolate, cuerpo suave.']]},
+    {name:'Botella y sin alcohol',items:[
+      ['Tercio de cerveza','2,50 €','Pregúntanos por las marcas disponibles.'],
+      ['Cerveza sin alcohol','2,50 €','Disponible también sin gluten, consúltanos.']]}
+   ]},
+  {id:'cocteles',title:'Coctelería & Copas',when:'De noche',
+   photo:'https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=900&q=70',
+   lead:'Preparados al momento, con hielo de calidad.',
+   groups:[
+    {name:'Cócteles',items:[
+      ['Espresso Martini','8,00 €','Vodka, licor de café y espresso recién hecho. Del café a la copa.',true],
+      ['Mojito','7,00 €','Ron blanco, hierbabuena, lima, azúcar y soda.'],
+      ['Gin Tonic','7,50 €','Ginebra premium, tónica y un toque de cítricos o frutos rojos.'],
+      ['Aperol Spritz','6,50 €','Aperol, prosecco, soda y una rodaja de naranja.'],
+      ['Caipirinha','7,00 €','Cachaça, lima fresca y azúcar moreno.']]},
+    {name:'Copas & Vinos',items:[
+      ['Combinado nacional','6,00 €','Ron, ginebra, whisky o vodka con refresco a elegir.'],
+      ['Copa de vino','2,80 €','Tinto, blanco o rosado. Pregunta por la selección de la semana.'],
+      ['Tinto de verano','3,00 €','Vino tinto con gaseosa y limón, muy fresquito.'],
+      ['Sangría (jarra)','12,00 €','Vino, frutas de temporada y un toque de licor.']]}
+   ]}
+];
+</script>
+<script>
+function bootCarta(){
+  var gen=window.__gen=(window.__gen||0)+1;   /* cada repintado tiene su número: los cálculos pendientes de uno anterior no cuentan */
+  var cont=document.getElementById('hojas'),est=document.getElementById('estado');
+  var DIA=['cafes','tapas','bocadillos'],NOCHE=['cervezas','cocteles'];
+  var DEFECTO_HORARIO=[['Lunes a miércoles','08:30–14:00 y 16:30–22:00'],['Jueves','08:30–14:00 y 16:30–22:30'],['Viernes','08:30–14:00 y 16:30–00:00'],['Sábado','09:00–14:00 y 17:00–00:00'],['Domingo','cerrado']];
+  function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+  function precio(p){return /^[\d.,\s]+€?$/.test(p)?p.replace(/\s*€/,'').trim():p}
+
+  /* Cada categoría se trocea en bloques (título + primer apartado, luego cada apartado): los bloques no se parten al repartirlos */
+  function unidades(c){
+    var us=[];
+    c.groups.forEach(function(g,gi){
+      var u=el('section','cat'+(gi?' cont':''));
+      if(gi===0){u.appendChild(el('h2',null,c.title));if(c.lead)u.appendChild(el('p','lead',c.lead))}
+      var d=el('div','grupo');if(g.name&&g.name!==c.title)d.appendChild(el('h3',null,g.name));
+      var ul=el('ul');
+      g.items.forEach(function(it){
+        var li=el('li'),l=el('div','l'),n=el('span','n');
+        if(it[3])n.appendChild(el('span','estrella','★'));
+        n.appendChild(document.createTextNode(it[0]));
+        l.appendChild(n);l.appendChild(el('span','pts'));l.appendChild(el('span','p',precio(it[1])));li.appendChild(l);
+        if(it[2])li.appendChild(el('p','d',it[2]));
+        ul.appendChild(li);
+      });
+      d.appendChild(ul);u.appendChild(d);us.push(u);
+    });
+    return us;
+  }
+  function contar(c){return c.groups.reduce(function(n,g){return n+g.items.length+1},0)}
+
+  /* reparto: lo de día por delante; cervezas y copas por detrás; lo que no se conozca va a la cara con menos contenido */
+  var frente=[],dorso=[],nf=0,nd=0;
+  MENU.forEach(function(c){
+    var k=contar(c);
+    if(DIA.indexOf(c.id)>=0||(NOCHE.indexOf(c.id)<0&&nf<=nd)){frente.push(c);nf+=k}else{dorso.push(c);nd+=k}
+  });
+  if(!dorso.length&&frente.length>1){var m=frente.pop();dorso.push(m)}
+
+  function hoja(cats,esDorso){
+    var h=el('section','hoja'+(esDorso?' dorso':'')),p=el('div','panel');
+    var cab=el('header','cab');cab.appendChild(el('div','nombre','Café Tramuntana'));cab.appendChild(el('div','dir','Av. de la Pau, 34 · Ibi'));p.appendChild(cab);
+    var cols=el('div','cols');cols.appendChild(el('div','col'));cols.appendChild(el('div','col'));p.appendChild(cols);h._porCat=cats.map(unidades);
+    if(esDorso){
+      var il=el('div','info-local'),a=el('div'),b=el('div');
+      a.appendChild(el('h4',null,'Horario'));var hh=el('div','h');a.appendChild(hh);hh.id='horario-impreso';
+      DEFECTO_HORARIO.forEach(function(r){hh.appendChild(el('b',null,r[0]));hh.appendChild(el('span',null,r[1]))});
+      b.appendChild(el('h4',null,'Síguenos'));
+      var pr=el('p');pr.innerHTML='Instagram <strong>@tramuntanaibi</strong><br>Facebook <strong>Café Tramuntana</strong><br>Av. de la Pau, 34, 03440 Ibi';b.appendChild(pr);
+      il.appendChild(a);il.appendChild(b);p.appendChild(il);
+    }
+    var pie=el('footer','pie');
+    pie.appendChild(document.createTextNode('Precios en euros, IVA incluido. Si tienes alguna alergia o intolerancia, avisa a nuestro equipo antes de pedir.'));
+    if(MENU.some(function(c){return c.groups.some(function(g){return g.items.some(function(i){return i[3]})})}))pie.appendChild(el('div','leyenda','★  La estrella de la casa'));
+    p.appendChild(pie);h.appendChild(p);
+    return h;
+  }
+  cont.innerHTML='';
+  var wf=el('div','escala'),wd=el('div','escala'),hf=hoja(frente,false),hd=hoja(dorso,true);
+  wf.appendChild(hf);wd.appendChild(hd);cont.appendChild(wf);cont.appendChild(wd);
+
+  /* ---- ajuste automático: la letra más grande que deja cada cara en una sola hoja; las dos con el mismo tamaño ---- */
+  /* reparto en dos columnas: con dos categorías, una en cada columna; con más, se llena la primera columna y el resto pasa a la segunda */
+  function empaquetar(h){
+    var cs=h.querySelectorAll('.col'),c1=cs[0],c2=cs[1],pc=h._porCat;
+    c1.innerHTML='';c2.innerHTML='';
+    if(pc.length===2){pc[0].forEach(function(u){c1.appendChild(u)});pc[1].forEach(function(u){c2.appendChild(u)});return}
+    [].concat.apply([],pc).forEach(function(u){c1.appendChild(u)});
+    while(c1.scrollHeight>c1.clientHeight+1&&c1.children.length>1)c2.insertBefore(c1.lastChild,c2.firstChild);
+  }
+  function cabe(h){var cs=h.querySelectorAll('.col'),p=h.querySelector('.panel');return cs[0].scrollHeight<=cs[0].clientHeight+2&&cs[1].scrollHeight<=cs[1].clientHeight+2&&p.scrollHeight<=p.clientHeight+2}
+  function mejor(h){var fs=12.5;for(;fs>=6.2;fs-=.15){h.style.setProperty('--fs',fs+'pt');empaquetar(h);if(cabe(h))return fs}return 6.2}
+  function ajustar(){
+    if(window.__gen!==gen)return;
+    var prev=cont.style.cssText;
+    [wf,wd].forEach(function(w){w.style.transform='none'});
+    /* cada cara usa la letra más grande que le cabe; el dorso, que suele llevar menos, no pasa del 20 % más que el frente */
+    var ff=mejor(hf),fd=Math.min(mejor(hd),ff*1.2),fs=Math.min(ff,fd);
+    hf.style.setProperty('--fs',ff+'pt');hd.style.setProperty('--fs',fd+'pt');empaquetar(hf);empaquetar(hd);
+    var ok=cabe(hf)&&cabe(hd),f1=function(x){return x.toFixed(1).replace('.',',')};
+    est.className='estado'+(ok&&fs>=7?'':' mal');
+    est.textContent=(ok?'Cada cara cabe en una hoja A4. ':'¡Hay demasiado texto para una hoja! ')+'Tamaño de letra: '+f1(ff)+' pt (frente) y '+f1(fd)+' pt (dorso)'+(fs<7.5?'. Es pequeño: prueba a quitar las descripciones':'')+'. Datos: '+(window.TR_FUENTE==='hoja'?'hoja de Google actualizada.':window.TR_FUENTE==='cache'?'última carta guardada (sin conexión).':'carta de ejemplo (sin conexión con la hoja): comprueba los precios.');
+    previsualizar();
+  }
+  /* vista previa en pantalla: se reduce para que quepan las dos hojas; al imprimir no se aplica */
+  function previsualizar(){
+    var W=Math.max(320,document.documentElement.clientWidth),mm=3.7795,ancho=210*mm,alto=296*mm;
+    var e=W>=2*ancho*0.62+60?Math.min(1,(W-24-24)/(2*ancho)):Math.min(1,(W-24)/ancho);
+    [wf,wd].forEach(function(w){w.style.transform='scale('+e+')';w.style.width=ancho*e+'px';w.style.height=alto*e+'px'});
+  }
+  function etiquetas(){document.body.classList.toggle('sin-desc',!document.getElementById('desc').checked);document.body.classList.toggle('sin-fondo',!document.getElementById('fondo').checked)}
+
+  if(!window.__imprimirListo){
+    window.__imprimirListo=true;
+    document.getElementById('imprimir').addEventListener('click',function(){window.print()});
+    ['desc','fondo'].forEach(function(id){document.getElementById(id).addEventListener('change',function(){etiquetas();window.__imprimirAjustar&&window.__imprimirAjustar()})});
+    window.addEventListener('resize',function(){window.__imprimirPrev&&window.__imprimirPrev()});
+    window.addEventListener('beforeprint',function(){window.__imprimirAjustar&&window.__imprimirAjustar(true)});
+    window.addEventListener('tr-fuente',function(){window.__imprimirAjustar&&window.__imprimirAjustar()});
+  }
+  window.__imprimirAjustar=function(){ajustar()};window.__imprimirPrev=previsualizar;window.__imprimirAplicar=function(){aplicarHorario()};
+  etiquetas();
+  ajustar();
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(ajustar);
+
+  /* ---- horario real, de la pestaña «Horario» de la hoja ---- */
+  function norm(x){return String(x||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim()}
+  function csv(x){var rows=[],row=[],f='',q=false,i,c;x=x.replace(/^﻿/,'');for(i=0;i<x.length;i++){c=x[i];if(q){if(c==='"'){if(x[i+1]==='"'){f+='"';i++}else q=false}else f+=c}else if(c==='"')q=true;else if(c===','){row.push(f);f=''}else if(c==='\n'||c==='\r'){if(c==='\r'&&x[i+1]==='\n')i++;row.push(f);f='';rows.push(row);row=[]}else f+=c}if(f!==''||row.length){row.push(f);rows.push(row)}return rows}
+  function turno(x){var m=String(x||'').match(/(\d{1,2})[:.h](\d{2})\s*(?:-|–|—|a)\s*(\d{1,2})[:.h](\d{2})/i);if(!m)return null;return ('0'+m[1]).slice(-2)+':'+m[2]+'–'+('0'+m[3]).slice(-2)+':'+m[4]}
+  var NOM=['lunes','martes','miercoles','jueves','viernes','sabado','domingo'],BON=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+  function agrupar(rows){
+    var d={};rows.slice(1).forEach(function(r){var i=NOM.indexOf(norm(r[0]));if(i<0)return;var t=[r[1],r[2]].map(turno).filter(Boolean);d[i]=t.length?t.join(' y '):'cerrado'});
+    if(Object.keys(d).length<7)return null;
+    var out=[],i=0;while(i<7){var j=i;while(j+1<7&&d[j+1]===d[i])j++;out.push([i===j?BON[i]:BON[i]+(j-i===1?' y ':' a ')+BON[j].toLowerCase(),d[i]]);i=j+1}
+    return out;
+  }
+  function aplicarHorario(){
+    var g=window.__horarioReal,hh=document.getElementById('horario-impreso');if(!g||!hh)return;
+    hh.innerHTML='';g.forEach(function(r){hh.appendChild(el('b',null,r[0]));hh.appendChild(el('span',null,r[1]))});
+  }
+  aplicarHorario();ajustar();
+  var url=(window.SHEET_CSV_URL||'').replace('sheet=Carta','sheet=Horario');
+  if(url&&window.fetch&&!window.__horarioPedido){
+    window.__horarioPedido=true;
+    fetch(url+'&t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(t){
+      var g=agrupar(csv(t));if(!g)return;
+      window.__horarioReal=g;window.__imprimirAplicar&&window.__imprimirAplicar();window.__imprimirAjustar&&window.__imprimirAjustar();
+    }).catch(function(){});
+  }
+}
+</script>
+<script src="carta-datos.js"></script>
+</body>
+</html>
