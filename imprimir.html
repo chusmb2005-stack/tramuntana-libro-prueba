@@ -64,7 +64,7 @@ body{font-family:var(--sans);color:var(--nogal);background:#d9d4c8;-webkit-font-
 
 .pie{margin-top:auto;padding-top:3.4mm;border-top:.3mm solid var(--linea);font-size:.8em;color:var(--foam);text-align:center;line-height:1.35}
 .pie .leyenda{margin-top:1.2mm}
-.info-local{margin-top:auto;display:grid;grid-template-columns:1.75fr 1fr;gap:5mm;padding:4mm 4.5mm;border:.3mm solid var(--linea);border-radius:3mm;background:rgba(255,250,236,.9);font-size:.95em}
+.info-local{margin-top:auto;display:grid;grid-template-columns:1.75fr 1fr;gap:5mm;padding:4mm 4.5mm;border:.3mm solid var(--linea);border-radius:3mm;background:#fff;font-size:.95em}
 .info-local h4{font-family:var(--serif);font-weight:700;font-size:1.35em;margin-bottom:1mm;color:var(--nogal)}
 .info-local .h{display:grid;grid-template-columns:auto auto;justify-content:start;gap:.3mm 4mm;font-size:.86em}
 .info-local .h b{font-weight:600}
@@ -222,7 +222,7 @@ function bootCarta(){
 
   function hoja(cats,esDorso){
     var h=el('section','hoja'+(esDorso?' dorso':'')),p=el('div','panel');
-    if(esDorso){var cab=el('header','cab');cab.appendChild(el('div','nombre','Café Tramuntana'));cab.appendChild(el('div','dir','Av. de la Pau, 34 · Ibi'));p.appendChild(cab)}
+    if(!esDorso){var cab=el('header','cab');cab.appendChild(el('div','nombre','Café Tramuntana'));cab.appendChild(el('div','dir','Av. de la Pau, 34 · Ibi'));p.appendChild(cab)}
     var cols=el('div','cols');cols.appendChild(el('div','col'));cols.appendChild(el('div','col'));p.appendChild(cols);h._porCat=cats.map(unidades);
     if(esDorso){
       var il=el('div','info-local'),a=el('div'),b=el('div');
